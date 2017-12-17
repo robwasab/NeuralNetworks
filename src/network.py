@@ -11,6 +11,7 @@ and omits many desirable features.
 
 #### Libraries
 # Standard library
+from time import time
 import random
 
 # Third-party libraries
@@ -54,12 +55,21 @@ class Network(object):
         if test_data: n_test = len(test_data)
         n = len(training_data)
         for j in xrange(epochs):
+            shuffle_time = time()
             random.shuffle(training_data)
+            shuffle_time = time() - shuffle_time
+            print 'random shuffle duration: %f'%shuffle_time
+
             mini_batches = [
                 training_data[k:k+mini_batch_size]
                 for k in xrange(0, n, mini_batch_size)]
+
+            batch_time = time()
             for mini_batch in mini_batches:
                 self.update_mini_batch(mini_batch, eta)
+            batch_time = time() - batch_time
+            print 'mini_batch processing time: %f'%batch_time
+
             if test_data:
                 print "Epoch {0}: {1} / {2}".format(
                     j, self.evaluate(test_data), n_test)
